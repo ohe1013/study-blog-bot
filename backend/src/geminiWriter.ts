@@ -13,17 +13,24 @@ export async function generateStudyBlogPost(): Promise<string> {
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
   const prompt = `
-너는 IELTS 공부습관 챌린지를 기록하는 학생이야. 아래 조건을 참고해서 블로그 글을 작성해줘.
-- 오늘 공부한 파트 (리스닝, 쉐도잉 등)
-- 느낀 점, 어려웠던 점
-- 공부 방법, 효과
-- 앞으로의 다짐
-자연스럽고 간단한 블로그 스타일로 300자 이상 부탁해.`;
+Please write a Korean blog post of at least 500 characters following the rules below. The topic is about studying IELTS using a learning sheet.
+
+1. Title must include one of the following keywords: 아이엘츠학습지, 아이엘츠후기, 아이엘츠독학, 아이엘츠인강, 아이엘츠6, 아이엘츠내돈내산.
+2. In the body, insert at least two hashtags from this list: #IELTS #아이엘츠공부 #아이엘츠환급 #아이엘츠인강추천 #시원스쿨아이엘츠.
+3. End the post with the sentence: "본 포스팅은 직접 체험한 내용이며, 공부습관챌린지 환급 참여를 위한 포스팅입니다."
+4. Also include the following URL at the end: https://bit.ly/3GN3fpt.
+5. Content should be in a casual and personal blog style ( i'm 33 years old man).
+6. 2025-06-10 is my first study day 
+7. The content should mention what was studied that day and any difficulties or insights.
+
+Now write a Day 1 post for someone who studied the IELTS Listening part for one hour and did shadowing practice.
+
+`;
 
   const result = await model.generateContent(prompt);
-  const response = await result.response;
-  const text = response.text();
-  return text;
+  const blogPost = await result.response.text();
+
+  return blogPost;
 }
 
 export async function uploadPhotoToNaver(
