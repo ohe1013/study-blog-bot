@@ -184,8 +184,15 @@ async function publishBlog() {
 
   // 2. 브라우저 실행
   const browser = await puppeteer.launch({
-    headless: false,
-    args: ["--no-sandbox", "--window-size=1400,1000"],
+    headless: true, // ← 반드시 true
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage",
+      "--disable-gpu",
+      "--window-size=1400,1000",
+    ],
+    // executablePath: "/usr/bin/google-chrome-stable", // 필요 시 지정
   });
   const page = await browser.newPage();
   await page.setViewport({ width: 1366, height: 900 });
