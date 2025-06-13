@@ -184,7 +184,7 @@ async function publishBlog() {
 
   // 2. 브라우저 실행
   const browser = await puppeteer.launch({
-    headless: true, // ← 반드시 true
+    headless: true,
     args: [
       "--no-sandbox",
       "--disable-setuid-sandbox",
@@ -192,13 +192,23 @@ async function publishBlog() {
       "--disable-gpu",
       "--window-size=1400,1000",
     ],
-    // executablePath: "/usr/bin/google-chrome-stable", // 필요 시 지정
+    // executablePath: "/usr/bin/google-chrome-stable", // 시스템 크롬을 쓸 때
   });
   const page = await browser.newPage();
+  await page.setUserAgent(
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
+      "AppleWebKit/537.36 (KHTML, like Gecko) " +
+      "Chrome/114.0.0.0 Safari/537.36"
+  );
   await page.setViewport({ width: 1366, height: 900 });
 
   // 3. 로그인 및 글쓰기 페이지 이동
   await loadCookies(page);
+  await page.goto(
+    `https://blog.naver.com/PostWriteForm.naver?blogId=${BLOG_ID}`,
+    { waitUntil: "networkidle2" }
+  );
+
   await page.goto(`https://blog.naver.com/${BLOG_ID}`, {
     waitUntil: "networkidle2",
   });
@@ -219,6 +229,12 @@ async function publishBlog() {
     `https://blog.naver.com/PostWriteForm.naver?blogId=${BLOG_ID}`,
     { waitUntil: "networkidle2" }
   );
+  // iframe 핸들 얻기 (ID나 src는 개발자도구에서 확인)
+  const frameHandle = await page.waitForSelector("iframe#mainFrame");
+  if (!frameHandle) throw new Error("에디터 iframe이 없습니다");
+
+  const editorFrame = await frameHandle.contentFrame();
+  if (!editorFrame) throw new Error("iframe.contentFrame() 실패");
 
   // 4. 글쓰기 작업 수행
   await dismissPopup(page, "button.se-popup-button-cancel");
