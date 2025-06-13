@@ -3,6 +3,7 @@ import puppeteer, { Page } from "puppeteer";
 import fs from "fs";
 import path from "path";
 import dotenv from "dotenv";
+import { notifySlack } from "./notifySlack";
 
 // --- 기본 설정 ---
 dotenv.config();
@@ -32,14 +33,14 @@ interface PostData {
 async function loadCookies(page: Page) {
   if (fs.existsSync(COOKIE_PATH)) {
     const cookies = JSON.parse(fs.readFileSync(COOKIE_PATH, "utf-8"));
-    await page.setCookie(...cookies);
+    await page.browserContext().setCookie(...cookies);
     console.log("✅ 쿠키를 성공적으로 불러왔습니다.");
   }
 }
 
 // 쿠키 저장 함수
 async function saveCookies(page: Page) {
-  const cookies = await page.cookies();
+  const cookies = await page.browserContext().cookies();
   fs.writeFileSync(COOKIE_PATH, JSON.stringify(cookies, null, 2));
   console.log("✅ 쿠키를 저장했습니다. 다음 실행 시 로그인을 건너뜁니다.");
 }
@@ -50,6 +51,7 @@ async function login(page: Page) {
   await page.goto("https://nid.naver.com/nidlogin.login", {
     waitUntil: "networkidle2",
   });
+  page.keyboard.type(NAVER_ID);
   await page.evaluate(
     (id, pw) => {
       (document.querySelector("#id") as HTMLInputElement).value = id;
@@ -232,6 +234,21 @@ async function publishBlog() {
 
   // 잠시 후 브라우저 종료
   // await page.waitForTimeout(5000);
+  try {
+    await notifySlack(`✅ 포스팅 완료: "${postData.title}"`, true, [
+      {
+        title: "채널",
+        value: process.env.SLACK_CHANNEL || "#random",
+        short: true,
+      },
+      { title: "이미지 수", value: `${postData.images.length}`, short: true },
+    ]);
+  } catch (err: any) {
+    console.error("❌ 오류 발생:", err);
+    await notifySlack(`❌ 포스팅 실패: ${err.message}`, false);
+  } finally {
+    if (browser) await browser.close();
+  }
   await browser.close();
 }
 

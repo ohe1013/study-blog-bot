@@ -42,8 +42,8 @@ The output MUST be a valid JSON object with the keys "title", "body", and "tags"
 
 - "title": A string. Must include one keyword from [아이엘츠학습지, 아이엘츠후기, 아이엘츠독학, 아이엘츠인강, 아이엘츠6, 아이엘츠내돈내산].
 - "body": An array of strings, where each string is a paragraph.
-  - The content should be in a casual, personal blog style for a 33-year-old man.
-  - Today is the first study day, June 12, 2025.
+  - The content should be in a casual, personal blog style for a 33-year-old man. 나이를 언급하라는게아니고 그냥 이 나이대 톤으로 써달라는거임.
+  - Today is the first study day, June 12, 2025. 이날을 기준으로 title의 날짜나 내용의 날짜도 변경되어야함
   - Mention studying IELTS Listening for one hour and doing shadowing practice.
   - Include difficulties or insights from the study session.
   - Total character count should be at least 500 characters.
