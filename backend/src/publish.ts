@@ -219,11 +219,18 @@ async function publishBlog() {
   await page.setViewport({ width: 1366, height: 900 });
 
   // 3. 로그인 및 글쓰기 페이지 이동
-  await loadCookies(page);
-  await page.goto(`https://blog.naver.com/${BLOG_ID}`, {
-    waitUntil: "domcontentloaded", // HTML 파싱만 끝나면 바로 반환
-    timeout: 60000, // 필요 시 타임아웃 연장
-  });
+  try {
+    await loadCookies(page);
+    await page.goto(`https://blog.naver.com/${BLOG_ID}`, {
+      waitUntil: "domcontentloaded", // HTML 파싱만 끝나면 바로 반환
+      timeout: 60000, // 필요 시 타임아웃 연장
+    });
+  } catch (err) {
+    await page.screenshot({ path: "debug.png", fullPage: true });
+    fs.writeFileSync("debug.html", await page.content(), "utf-8");
+    console.log("🖼️ debug.png, debug.html 생성 완료");
+    throw err;
+  }
   console.log("현재 URL:", page.url());
 
   const isLoggedIn = await page.$(
