@@ -59,6 +59,8 @@ async function login(page: Page) {
     NAVER_ID,
     NAVER_PW
   );
+  await page.waitForSelector("button.btn_login");
+  console.log("✅ 로그인 버튼 찾음");
   await page.click(`button.btn_login`);
   await page.waitForNavigation({ waitUntil: "networkidle2" });
   console.log("✅ 로그인 성공!");
@@ -220,6 +222,7 @@ async function publishBlog() {
   );
 
   // 4. 글쓰기 작업 수행
+  console.log("🚀 글쓰기 작업 시작!");
   await dismissPopup(page, "button.se-popup-button-cancel");
   await dismissPopup(page, "button.se-help-panel-close-button");
   await typeTitle(page, postData.title);
