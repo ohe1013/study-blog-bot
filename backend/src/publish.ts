@@ -196,6 +196,11 @@ async function publishBlog() {
     // executablePath: "/usr/bin/google-chrome-stable", // 필요 시 지정
   });
   const page = await browser.newPage();
+  await page.setUserAgent(
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
+      "AppleWebKit/537.36 (KHTML, like Gecko) " +
+      "Chrome/114.0.0.0 Safari/537.36"
+  );
   await page.setViewport({ width: 1366, height: 900 });
 
   // 3. 로그인 및 글쓰기 페이지 이동
@@ -204,7 +209,7 @@ async function publishBlog() {
     waitUntil: "domcontentloaded", // HTML 파싱만 끝나면 바로 반환
     timeout: 60000, // 필요 시 타임아웃 연장
   });
-  console.log(page.frames().map((f) => ({ name: f.name(), url: f.url() })));
+  console.log("현재 URL:", page.url());
 
   const isLoggedIn = await page.$(
     'a[href*="https://nid.naver.com/nidlogin.logout"]'
