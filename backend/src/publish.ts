@@ -203,6 +203,7 @@ async function publishBlog() {
   await page.goto(`https://blog.naver.com/${BLOG_ID}`, {
     waitUntil: "networkidle2",
   });
+  console.log(page.frames().map((f) => ({ name: f.name(), url: f.url() })));
 
   const isLoggedIn = await page.$(
     'a[href*="https://nid.naver.com/nidlogin.logout"]'
