@@ -51,7 +51,6 @@ async function login(page: Page) {
   await page.goto("https://nid.naver.com/nidlogin.login", {
     waitUntil: "networkidle2",
   });
-  page.keyboard.type(NAVER_ID);
   await page.evaluate(
     (id, pw) => {
       (document.querySelector("#id") as HTMLInputElement).value = id;
