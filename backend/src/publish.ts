@@ -201,6 +201,21 @@ async function publishBlog() {
       "AppleWebKit/537.36 (KHTML, like Gecko) " +
       "Chrome/114.0.0.0 Safari/537.36"
   );
+  await page.setRequestInterception(true);
+  page.on("request", (req) => {
+    const url = req.url();
+    // 광고/분석 스크립트 차단
+    if (
+      url.includes("google-analytics") ||
+      url.includes("adservice") ||
+      url.endsWith(".gif") ||
+      url.endsWith(".mp4")
+    ) {
+      req.abort();
+    } else {
+      req.continue();
+    }
+  });
   await page.setViewport({ width: 1366, height: 900 });
 
   // 3. 로그인 및 글쓰기 페이지 이동
@@ -230,13 +245,11 @@ async function publishBlog() {
       timeout: 60000,
     }
   );
-  await page.waitForSelector("frame[name=mainFrame], iframe[src*='editor']", {
-    timeout: 60000,
-  });
-  const editorFrame = page
-    .frames()
-    .find((f) => f.name() === "mainFrame" || f.url().includes("editor"));
-  if (!editorFrame) throw new Error("에디터 프레임 로드 실패");
+  // (A) 에디터 프레임 찾기
+  await page.waitForSelector("frame[name=mainFrame]", { timeout: 60000 });
+  const editorFrame = page.frames().find((f) => f.name() === "mainFrame");
+  if (!editorFrame) throw new Error("mainFrame 프레임 로드 실패");
+
   console.log(page.frames().map((f) => ({ name: f.name(), url: f.url() })));
   if (!editorFrame) throw new Error("✋ mainFrame 프레임을 찾지 못했습니다!");
 
