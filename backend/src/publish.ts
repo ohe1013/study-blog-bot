@@ -201,7 +201,8 @@ async function publishBlog() {
   // 3. 로그인 및 글쓰기 페이지 이동
   await loadCookies(page);
   await page.goto(`https://blog.naver.com/${BLOG_ID}`, {
-    waitUntil: "networkidle2",
+    waitUntil: "domcontentloaded", // HTML 파싱만 끝나면 바로 반환
+    timeout: 60000, // 필요 시 타임아웃 연장
   });
   console.log(page.frames().map((f) => ({ name: f.name(), url: f.url() })));
 
