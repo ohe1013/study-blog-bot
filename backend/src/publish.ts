@@ -220,6 +220,9 @@ async function publishBlog() {
     `https://blog.naver.com/PostWriteForm.naver?blogId=${BLOG_ID}`,
     { waitUntil: "networkidle2" }
   );
+  console.log(page.frames().map((f) => ({ name: f.name(), url: f.url() })));
+  const editorFrame = page.frames().find((f) => f.name() === "mainFrame");
+  if (!editorFrame) throw new Error("✋ mainFrame 프레임을 찾지 못했습니다!");
 
   // 4. 글쓰기 작업 수행
   console.log("🚀 글쓰기 작업 시작!");
