@@ -218,10 +218,19 @@ async function publishBlog() {
 
   await page.goto(
     `https://blog.naver.com/PostWriteForm.naver?blogId=${BLOG_ID}`,
-    { waitUntil: "networkidle2" }
+    {
+      waitUntil: "domcontentloaded",
+      timeout: 60000,
+    }
   );
+  await page.waitForSelector("frame[name=mainFrame], iframe[src*='editor']", {
+    timeout: 60000,
+  });
+  const editorFrame = page
+    .frames()
+    .find((f) => f.name() === "mainFrame" || f.url().includes("editor"));
+  if (!editorFrame) throw new Error("에디터 프레임 로드 실패");
   console.log(page.frames().map((f) => ({ name: f.name(), url: f.url() })));
-  const editorFrame = page.frames().find((f) => f.name() === "mainFrame");
   if (!editorFrame) throw new Error("✋ mainFrame 프레임을 찾지 못했습니다!");
 
   // 4. 글쓰기 작업 수행
