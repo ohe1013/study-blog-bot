@@ -87,10 +87,6 @@ async function typeTitle(page: Page, title: string) {
   const titleSelector = "div.se-title-text";
   await page.waitForSelector(titleSelector);
   console.log("title을 찾았습니다.");
-  const iframeCountCount = await page.evaluate(() => {
-    return document.querySelectorAll("iframe").length;
-  });
-  console.log("iframeCount =  ", iframeCountCount);
   await page.click(titleSelector);
   await page.keyboard.type(title, { delay: 100 });
 }
@@ -254,9 +250,6 @@ async function publishBlog() {
     }
   );
   console.log("블로그 접속완료");
-  page.frames().forEach((f) => {
-    console.log("▶ frame:", JSON.stringify({ name: f.name(), url: f.url() }));
-  });
   // (A) 에디터 프레임 찾기
   // await page.waitForSelector("frame[name=mainFrame]", { timeout: 60000 });
   // const editorFrame = page.frames().find((f) => f.name() === "mainFrame");
@@ -270,10 +263,27 @@ async function publishBlog() {
   await dismissPopup(page, "button.se-popup-button-cancel");
   await dismissPopup(page, "button.se-help-panel-close-button");
   console.log("현재 URL:", page.url());
-  const divCount = await page.evaluate(() => {
-    return document.querySelectorAll("div.se-title-text").length;
+  const divInfos = await page.evaluate(() => {
+    return Array.from(document.querySelectorAll("div")).map((div) => {
+      const cls = div.className.trim();
+      const id = div.id;
+      // 내부 텍스트가 길면 앞 30자만
+      const txt =
+        div.textContent?.trim().slice(0, 30).replace(/\s+/g, " ") || "";
+      return { tag: "div", class: cls, id, text: txt };
+    });
   });
-  console.log("페이지 내 <div> 개수:", divCount);
+
+  // 노드 콘솔에 찍기
+  console.log("=== 페이지 내 div 목록 ===");
+  divInfos.forEach((info, i) => {
+    console.log(
+      `${i + 1}. class="${info.class}"`,
+      info.id ? `id="${info.id}"` : "",
+      info.text ? `text="${info.text}…”` : ""
+    );
+  });
+  console.log("=== div 끝 ===");
   await typeTitle(page, postData.title);
   await typeBody(page, postData.body, postData.sourceInfo, postData.sourceUrl);
   await uploadImages(page, postData.images);
