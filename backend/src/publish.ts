@@ -246,10 +246,13 @@ async function publishBlog() {
     console.log("✅ 이미 로그인된 상태입니다.");
   }
 
-  await page.goto(`https://blog.naver.com/${BLOG_ID}`, {
-    waitUntil: "load", // domcontentloaded 대신 load 사용
-    timeout: 90000,
-  });
+  await page.goto(
+    `https://blog.naver.com/PostWriteForm.naver?blogId=${BLOG_ID}`,
+    {
+      waitUntil: "load", // domcontentloaded 대신 load 사용
+      timeout: 90000,
+    }
+  );
   console.log("블로그 접속완료");
   // (A) 에디터 프레임 찾기
   // await page.waitForSelector("frame[name=mainFrame]", { timeout: 60000 });
