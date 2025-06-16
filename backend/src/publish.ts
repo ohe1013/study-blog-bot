@@ -71,7 +71,7 @@ async function login(page: Page) {
 }
 async function dismissPopup(page: Page, selector: string) {
   try {
-    await page.waitForSelector(selector, { timeout: 3000 });
+    await page.waitForSelector(selector, { timeout: 6000 });
     await page.click(selector);
     console.log(`✅ 팝업(${selector}) 닫음`);
   } catch {
