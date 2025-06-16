@@ -133,7 +133,7 @@ async function uploadImages(page: Page, imagePaths: string[]) {
   // 파일 선택창에 이미지 경로들을 전달합니다.
   await fileChooser.accept(imagePaths);
   const popupSelector =
-    ".se-popup-container.__se-pop-layer .se-image-type-label";
+    "div.se-popup-container.__se-pop-layer .se-image-type-label";
   await page.waitForSelector(popupSelector);
   page.click(popupSelector);
   await page.waitForFunction(
@@ -263,32 +263,12 @@ async function publishBlog() {
   await dismissPopup(page, "button.se-popup-button-cancel");
   await dismissPopup(page, "button.se-help-panel-close-button");
   console.log("현재 URL:", page.url());
-  const divInfos = await page.evaluate(() => {
-    return Array.from(document.querySelectorAll("div")).map((div) => {
-      const cls = div.className.trim();
-      const id = div.id;
-      // 내부 텍스트가 길면 앞 30자만
-      const txt =
-        div.textContent?.trim().slice(0, 30).replace(/\s+/g, " ") || "";
-      return { tag: "div", class: cls, id, text: txt };
-    });
-  });
-
-  // 노드 콘솔에 찍기
-  console.log("=== 페이지 내 div 목록 ===");
-  divInfos.forEach((info, i) => {
-    console.log(
-      `${i + 1}. class="${info.class}"`,
-      info.id ? `id="${info.id}"` : "",
-      info.text ? `text="${info.text}…”` : ""
-    );
-  });
-  console.log("=== div 끝 ===");
-  await typeTitle(page, postData.title);
-  await typeBody(page, postData.body, postData.sourceInfo, postData.sourceUrl);
-  await uploadImages(page, postData.images);
+  // await typeTitle(page, postData.title);
+  // await typeBody(page, postData.body, postData.sourceInfo, postData.sourceUrl);
+  // await uploadImages(page, postData.images);
 
   // 5. 발행 준비
+  await page.waitForSelector("button.publish_btn__m9KHH"); // 발행 팝업이 뜰 때까지 대기
   await page.click("button.publish_btn__m9KHH");
   console.log("✅ 발행 버튼 클릭!");
 
