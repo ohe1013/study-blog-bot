@@ -244,7 +244,8 @@ async function publishBlog() {
   if (!isLoggedIn) {
     await login(page);
     await page.goto(`https://blog.naver.com/${BLOG_ID}`, {
-      waitUntil: "networkidle2",
+      waitUntil: "domcontentloaded", // 최소한 HTML 파싱까지만 기다림
+      timeout: 60000,
     });
     console.log("블로그 접속완료");
   } else {
