@@ -62,7 +62,7 @@ async function login(page: Page) {
   await page.waitForSelector("button.btn_login");
   console.log("✅ 로그인 버튼 찾음");
   await page.click(`button.btn_login`);
-  await page.waitForNavigation({ waitUntil: "networkidle2" });
+  await page.waitForNavigation({ waitUntil: "domcontentloaded" });
   console.log("✅ 로그인 성공!");
   await saveCookies(page);
 }
