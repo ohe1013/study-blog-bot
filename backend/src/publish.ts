@@ -4,10 +4,12 @@ import fs from "fs";
 import path from "path";
 import dotenv from "dotenv";
 import { notifySlack } from "./notifySlack";
+import puppeteerExtra from "puppeteer-extra";
+import StealthPlugin from "puppeteer-extra-plugin-stealth";
 
 // --- 기본 설정 ---
 dotenv.config();
-
+puppeteerExtra.use(StealthPlugin());
 // 파일 경로: HTML 대신 JSON 데이터를 사용합니다.
 const COOKIE_PATH = path.resolve(__dirname, "../cookies.json");
 const POST_DATA_PATH = path.resolve(__dirname, "../post_data.json");
@@ -189,7 +191,7 @@ async function publishBlog() {
   );
 
   // 2. 브라우저 실행
-  const browser = await puppeteer.launch({
+  const browser = await puppeteerExtra.launch({
     headless: true, // ← 반드시 true
     args: [
       "--no-sandbox",
@@ -200,6 +202,7 @@ async function publishBlog() {
     ],
     // executablePath: "/usr/bin/google-chrome-stable", // 필요 시 지정
   });
+  console.log(await browser.version());
   const page = await browser.newPage();
   await page.setUserAgent(
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
