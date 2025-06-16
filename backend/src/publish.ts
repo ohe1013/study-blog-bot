@@ -267,7 +267,10 @@ async function publishBlog() {
   await dismissPopup(page, "button.se-popup-button-cancel");
   await dismissPopup(page, "button.se-help-panel-close-button");
   console.log("현재 URL:", page.url());
-  document.querySelectorAll("div").forEach((div) => console.log(div));
+  const divCount = await page.evaluate(() => {
+    return document.querySelectorAll("div.se-title-text").length;
+  });
+  console.log("페이지 내 <div> 개수:", divCount);
   await typeTitle(page, postData.title);
   await typeBody(page, postData.body, postData.sourceInfo, postData.sourceUrl);
   await uploadImages(page, postData.images);
