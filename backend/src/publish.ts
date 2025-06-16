@@ -266,6 +266,8 @@ async function publishBlog() {
   console.log("🚀 글쓰기 작업 시작!");
   await dismissPopup(page, "button.se-popup-button-cancel");
   await dismissPopup(page, "button.se-help-panel-close-button");
+  console.log("현재 URL:", page.url());
+  console.log(JSON.parse(document.querySelectorAll("div")));
   await typeTitle(page, postData.title);
   await typeBody(page, postData.body, postData.sourceInfo, postData.sourceUrl);
   await uploadImages(page, postData.images);
