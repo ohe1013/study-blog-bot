@@ -241,6 +241,7 @@ async function publishBlog() {
     await page.goto(`https://blog.naver.com/${BLOG_ID}`, {
       waitUntil: "networkidle2",
     });
+    console.log("블로그 접속완료");
   } else {
     console.log("✅ 이미 로그인된 상태입니다.");
   }
@@ -252,6 +253,7 @@ async function publishBlog() {
       timeout: 60000,
     }
   );
+  console.log("블로그 접속완료");
   // (A) 에디터 프레임 찾기
   await page.waitForSelector("frame[name=mainFrame]", { timeout: 60000 });
   const editorFrame = page.frames().find((f) => f.name() === "mainFrame");
