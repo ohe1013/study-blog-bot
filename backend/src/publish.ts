@@ -192,15 +192,14 @@ async function publishBlog() {
 
   // 2. 브라우저 실행
   const browser = await puppeteerExtra.launch({
-    headless: true, // ← 반드시 true
+    headless: true,
     args: [
       "--no-sandbox",
       "--disable-setuid-sandbox",
-      "--disable-dev-shm-usage",
       "--disable-gpu",
-      "--window-size=1400,1000",
+      "--disable-dev-shm-usage",
+      "--disable-blink-features=AutomationControlled",
     ],
-    // executablePath: "/usr/bin/google-chrome-stable", // 필요 시 지정
   });
   console.log(await browser.version());
   const page = await browser.newPage();
