@@ -254,6 +254,9 @@ async function publishBlog() {
     }
   );
   console.log("블로그 접속완료");
+  page.frames().forEach((f) => {
+    console.log("▶ frame:", JSON.stringify({ name: f.name(), url: f.url() }));
+  });
   // (A) 에디터 프레임 찾기
   // await page.waitForSelector("frame[name=mainFrame]", { timeout: 60000 });
   // const editorFrame = page.frames().find((f) => f.name() === "mainFrame");
