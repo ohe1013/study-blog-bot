@@ -229,10 +229,6 @@ async function publishBlog() {
   // 3. 로그인 및 글쓰기 페이지 이동
   try {
     await loadCookies(page);
-    await page.goto(`https://blog.naver.com/${BLOG_ID}`, {
-      waitUntil: "domcontentloaded", // HTML 파싱만 끝나면 바로 반환
-      timeout: 60000, // 필요 시 타임아웃 연장
-    });
   } catch (err) {
     await page.screenshot({ path: "debug.png", fullPage: true });
     fs.writeFileSync("debug.html", await page.content(), "utf-8");
@@ -250,13 +246,10 @@ async function publishBlog() {
     console.log("✅ 이미 로그인된 상태입니다.");
   }
 
-  await page.goto(
-    `https://blog.naver.com/PostWriteForm.naver?blogId=${BLOG_ID}`,
-    {
-      waitUntil: "domcontentloaded",
-      timeout: 60000,
-    }
-  );
+  await page.goto(`https://blog.naver.com/${BLOG_ID}`, {
+    waitUntil: "load", // domcontentloaded 대신 load 사용
+    timeout: 90000,
+  });
   console.log("블로그 접속완료");
   // (A) 에디터 프레임 찾기
   // await page.waitForSelector("frame[name=mainFrame]", { timeout: 60000 });
