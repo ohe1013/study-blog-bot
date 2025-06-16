@@ -83,6 +83,11 @@ async function typeTitle(page: Page, title: string) {
   console.log("✏️  제목을 입력합니다...");
   const titleSelector = "div.se-title-text";
   await page.waitForSelector(titleSelector);
+  console.log("title을 찾았습니다.");
+  const iframeCountCount = await page.evaluate(() => {
+    return document.querySelectorAll("iframe").length;
+  });
+  console.log("iframeCount =  ", iframeCountCount);
   await page.click(titleSelector);
   await page.keyboard.type(title, { delay: 100 });
 }
