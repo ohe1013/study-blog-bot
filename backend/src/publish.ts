@@ -51,7 +51,8 @@ async function saveCookies(page: Page) {
 async function login(page: Page) {
   console.log("🔐 로그인을 시작합니다...");
   await page.goto("https://nid.naver.com/nidlogin.login", {
-    waitUntil: "networkidle2",
+    waitUntil: "domcontentloaded",
+    timeout: 60000,
   });
   await page.evaluate(
     (id, pw) => {
