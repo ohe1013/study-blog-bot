@@ -267,7 +267,7 @@ async function publishBlog() {
   await dismissPopup(page, "button.se-popup-button-cancel");
   await dismissPopup(page, "button.se-help-panel-close-button");
   console.log("현재 URL:", page.url());
-  console.log(JSON.parse(document.querySelectorAll("div")));
+  document.querySelectorAll("div").forEach((div) => console.log(div));
   await typeTitle(page, postData.title);
   await typeBody(page, postData.body, postData.sourceInfo, postData.sourceUrl);
   await uploadImages(page, postData.images);
